@@ -3,23 +3,22 @@ module Comufy
 
     # Initialises the connection, setting up the configuration settings.
     #
-    # SERVER
-    # Pass :debug => true to run in debug mode, using the staging server
-    # If you do not pass :debug => true it'll use the social server.
+    # @param [Hash] params Details below:
+    #   SERVER
+    #   Pass :debug => true to run in debug mode, using the staging server
+    #   If you do not pass :debug => true it'll use the social server.
     #
-    # USER INFORMATION
-    # Pass :username => 'username' AND :password => 'password' to use that username and password.
-    # Otherwise it'll read the username/password from the yaml/config.yaml file you should
-    # supply in the format below.
-    # config:
-    #   username: username
-    #   password: password
+    #   USER INFORMATION
+    #   Pass :username => 'username' AND :password => 'password' to use that username and password.
+    #   Otherwise it'll read the username/password from the yaml/config.yaml file you should
+    #   supply in the format below.
+    #   config:
+    #     username: username
+    #     password: password
     #
-    # If you pass :no_env => true, it'll set the access_token and expiry_time to nil, otherwise it'll
-    # attempt to find them in your environment path. Note if you pass this, ensure you have your username
-    # and password correctly set as these are required to get the access_token.
-    #
-    # @param [Hash] params
+    #   If you pass :no_env => true, it'll set the access_token and expiry_time to nil, otherwise it'll
+    #   attempt to find them in your environment path. Note if you pass this, ensure you have your username
+    #   and password correctly set as these are required to get the access_token.
     def initialize params = {}
       @config = Config.new(params)
       if params.has_key?(:debug)
@@ -43,6 +42,9 @@ module Comufy
     # Example:
     # connect.store_users('Facebook Application Name', '1010101', { 'dob' => '1978-10-01 19:50:48' })
     #
+    # @param [String] app_name application name on which to add the user
+    # @param [String] uid the facebook user id of the user
+    # @param [Hash] tags the tags to apply to that user.
     def store_user app_name, uid, tags
       return false unless get_access_token
       if app_name.nil? or app_name.empty?
@@ -110,6 +112,10 @@ module Comufy
       false
     end
 
+    # TODO: IMPLEMENT METHOD
+    #
+    # @param [String] app_name application on which to remove a user
+    # @param [String] uid the facebook user id of the user to remove
     def remove_user app_name, uid
       @logger.warn(progname = 'Comufy::Connect.remove_user') {
           'METHOD_NOT_IMPLEMENTED'
@@ -127,6 +133,9 @@ module Comufy
     #   { '1010101' => { 'dob' => '1978-10-01 19:50:48' }, '2020202' => { 'dob' => '1978-10-01 19:50:48'}}
     # )
     #
+    # @param [String] app_name application in which to store users
+    # @param [Hash] uid_tags hash where the key is the facebook user id and the value a hash of tags/values to apply
+    #                        for that user id.
     def store_users app_name, uid_tags
       return false unless get_access_token
       if app_name.nil? or app_name.empty?
@@ -200,6 +209,8 @@ module Comufy
     #   }]
     # )
     #
+    # @param [String] app_name application to register tags with
+    # @param [Array] tags contains multiple hashes where each has two key/pairs, 'name' and 'type'
     def register_tags app_name, tags
       return false unless get_access_token
       if app_name.nil? or app_name.empty?
@@ -271,6 +282,8 @@ module Comufy
     # Example:
     # connect.register_tags('Facebook Application Name', 'dob')
     #
+    # @param [String] app_name application on which to unregister a tag
+    # @param [String] tag the tag to unregister
     def unregister_tag app_name, tag
       if app_name.nil? or app_name.empty?
         @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
@@ -350,7 +363,6 @@ module Comufy
     #   picture: URL of the image that should appear on the image section of the message
     #   privacy: whether the message should be sent private or not.
     # @param [String] filter filtering condition in CFL
-    # @return [Boolean]
     def send_facebook_message app_name, description, content, delivery_time = String(Time.now.to_i), shorten_urls = true, fb_array = {}, filter = ""
       if app_name.nil? or app_name.empty?
         @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
