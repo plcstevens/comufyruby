@@ -29,6 +29,6 @@ module Comufy
         @access_token = ENV.fetch('access_token',  nil)
         @access_token = ENV.fetch('expiry_time',   nil)
       end
-    end
-	end
+      end
+  end
 end
