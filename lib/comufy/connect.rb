@@ -40,22 +40,9 @@ module Comufy
     # This API call allows you to register a Facebook user of your application into Comufy’s social CRM.
     # If this user was already registered into Comufy, their information will be updated.
     #
-    # EXAMPLE
-    #  {
-    #    "token":"sampleUser@api:xxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    #    "cd":88,
-    #    "applicationName":"comufy", (@app_name)
-    #    "accounts":[
-    #    {
-    #        "account":{
-    #           "fbId":"100002107039643" (@uid)
-    #         },
-    #         “tags”: {
-    #           "dob":"1998-10-01 19:50:48", (@tags)
-    #           "name":"Mark" (@tags)
-    #         }
-    #    }]
-    #  }
+    # Example:
+    # connect.store_users('Facebook Application Name', '1010101', { 'dob' => '1978-10-01 19:50:48' })
+    #
     def store_user app_name, uid, tags
       return false unless get_access_token
       if app_name.nil? or app_name.empty?
@@ -89,7 +76,7 @@ module Comufy
 
       message = call_api(data)
       case message['cd']
-        when 338 then
+        when 388 then
           return true
         when 475 then
           @logger.warn(progname = 'Comufy::Connect.store_user') {
@@ -116,40 +103,12 @@ module Comufy
     # This API call allows you to register a Facebook user of your application into Comufy’s social CRM.
     # If this user was already registered into Comufy, their information will be updated.
     #
-    # EXAMPLE
-    #  {
-    #    "token":"sampleUser@api:xxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    #    "cd":88,
-    #    "applicationName":"comufy",
-    #    "accounts":[
-    #    {
-    #        "account":{
-    #           "fbId":"100002107039643"
-    #         },
-    #         “tags”:{
-    #           "dob":"1998-10-01 19:50:48",
-    #           "name":"Mark"
-    #         }
-    #    },
-    #    {
-    #        "account":{
-    #          "fbId":"100002107039643"
-    #         },
-    #         “tags”:{
-    #           "dob":"1988-10-01 19:50:48",
-    #           "name":"Steven"
-    #         }
-    #    },
-    #    {
-    #        "account":{
-    #           "fbId":"100002107039643"
-    #         },
-    #         “tags”:{
-    #           "dob":"1978-10-01 19:50:48",
-    #           “name”:“Sarah”
-    #         }
-    #     }]
-    #  }
+    # Example:
+    # connect.store_users(
+    #   'Facebook Application Name',
+    #   { '1010101' => { 'dob' => '1978-10-01 19:50:48' }, '2020202' => { 'dob' => '1978-10-01 19:50:48'}}
+    # )
+    #
     def store_users app_name, uid_tags
       return false unless get_access_token
       if app_name.nil? or app_name.empty?
@@ -169,12 +128,12 @@ module Comufy
           #token:           @config.access_token,
           cd:              '88',
           applicationName: app_name,
-          accounts:        build_account_information(uid_tags)
+          accounts:        uid_tags.map { |uid, tags| Hash[:account, { fbId: uid }, :tags, tags] }
       }
 
       message = call_api(data)
       case message['cd']
-        when 338 then
+        when 388 then
           return true
         when 475 then
           @logger.warn(progname = 'Comufy::Connect.store_users') {
@@ -197,67 +156,32 @@ module Comufy
       false
     end
 
-    def remove_user uid
-      return false unless get_access_token
-      if uid.nil? or uid.empty?
-        @logger.warn(progname = 'Comufy::Connect.remove_user') {
-          'First parameter must be a valid Facebook user ID.'
-        }
-        return false
-      end
-
-      data = {
-          #token:    @config.access_token,
-          cd:       176,
-          accounts: [{ account: { fbId: uid } }]
-      }
-
-      message = call_api(data)
-      case message['cd']
-        when 388 then
-          return true
-        when 475 then
-          @logger.warn(progname = 'Comufy::Connect.remove_user') {
-            '475 - Invalid parameters provided.'
-          }
-        else
-          # TODO : handle debug message output when this occurs.
-          @logger.warn(progname = 'Comufy::Connect.remove_user') {
-            "An error occurred when sending #{data}. Comufy returned #{message}. Please get in touch with Comufy if you cannot resolve the problem."
-          }
-      end
-      false
-    end
-
-    # EXAMPLE:
-    # {
-    #   "token": "admin@test:xxxxxxxxxxxxxxxxxxxxxxxx",
-    #   "tags": [{
-    #     "name": "dob",
-    #     "type": "DATE"
-    #     }, {
-    #     "name": "height",
-    #     "type": "FLOAT"
-    #     }, {
-    #     "name": "points",
-    #     "type": "INT"
-    #     }, {
-    #     "name": "continent"
-    #   }],
-    #   “cd”:86,
-    #   “applicationName”:“comufy”
-    # }
+    # Registering a Facebook application tag allows you to store data-fields about each one of your customers.
+    #
+    # Example:
+    # connect.register_tags(
+    #   'Facebook Application Name',
+    #   [{
+    #     'name' => 'dob',
+    #     'type' => 'DATE'
+    #   },
+    #   {
+    #     'name' => 'height',
+    #     'type' => 'FLOAT'
+    #   }]
+    # )
+    #
     def register_tags app_name, tags
       return false unless get_access_token
       if app_name.nil? or app_name.empty?
         @logger.warn(progname = 'Comufy::Connect.register_tags') {
-          'first parameter must be set to your application name.'
+          'First parameter must be set to your application name.'
         }
         return false
       end
       if tags.nil? or not tags.is_a?(Array)
         @logger.warn(progname = 'Comufy::Connect.register_tags') {
-          'second parameter must be an array containing hashes.'
+          'Second parameter must be an array containing hashes.'
         }
         return false
       end
@@ -273,6 +197,10 @@ module Comufy
       case message['cd']
         when 386 then
           return true
+        when 475 then
+          @logger.warn(progname = 'Comufy::Connect.register_tags') {
+            '475 - Invalid parameters provided'
+          }
         when 603 then
           @logger.warn(progname = 'Comufy::Connect.register_tags') {
             '603 - _ERROR_DOMAIN_APPLICATION_NAME_NOT_FOUND'
@@ -288,6 +216,62 @@ module Comufy
         else
           # TODO : handle debug message output when this occurs.
           @logger.warn(progname = 'Comufy::Connect.register_tags') {
+            "An error occurred when sending #{data}. Comufy returned #{message}. Please get in touch with Comufy if you cannot resolve the problem."
+          }
+      end
+      false
+    end
+
+    #
+    # This API call will unregister an existing application tag. All data associated with the tag will be lost.
+    #
+    # Example:
+    # connect.register_tags('Facebook Application Name', 'dob')
+    #
+    def unregister_tag app_name, tag
+      if app_name.nil? or app_name.empty?
+        @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
+          'First parameter must be set to your application name.'
+        }
+        return false
+      end
+      if tags.nil? or tag.empty?
+        @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
+          'Second parameter must be set to the tag.'
+        }
+        return false
+      end
+
+      data = {
+          #token:           @config.access_token,
+          tag:             tag,
+          cd:              85,
+          applicationName: app_name
+      }
+
+      message = call_api(data)
+      case message['cd']
+        when 385 then
+          return true
+        when 475 then
+          @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
+            '475 - Invalid parameters provided'
+          }
+        when 603 then
+          @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
+            '603 - _ERROR_DOMAIN_APPLICATION_NAME_NOT_FOUND'
+          }
+        when 607 then
+          @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
+            '607 - _ERROR_UNAUTHORISED_ACTION'
+          }
+        when 617 then
+          @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
+            '617 - _ERROR_DOMAIN_APPLICATION_TAG_NOT_FOUND'
+          }
+        else
+          # TODO : handle debug message output when this occurs.
+          @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
             "An error occurred when sending #{data}. Comufy returned #{message}. Please get in touch with Comufy if you cannot resolve the problem."
           }
       end
@@ -311,6 +295,10 @@ module Comufy
           @config.access_token = message['tokenInfo']['token']
           @config.expiry_time = message['tokenInfo']['expiryTime']
           return true
+        when 475 then
+          @logger.warn(progname = 'Comufy::Connect.authenticate') {
+            '475 - Invalid parameters provided'
+          }
         when 651 then
           @logger.warn(progname = 'Comufy::Connect.authenticate') {
             '651 - Invalid username exception. Check that you are login in using the format user@domain.'
@@ -376,22 +364,6 @@ module Comufy
       true
     end
     private :has_token_expired
-
-    #
-    #
-    # @param [Hash] uid_tags
-    # @return [Array]
-    def build_account_information uid_tags
-      uid_tags.map do |uid, tags|
-        {
-            account: {
-                fbId: uid
-            },
-            tags:    tags
-        }
-      end
-    end
-    private :build_account_information
 
   end
 end
