@@ -1,4 +1,4 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in comufyruby.gemspec
+# Specify your gem's dependencies in comufy.gemspec
 gemspec
