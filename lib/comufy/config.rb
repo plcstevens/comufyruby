@@ -16,9 +16,6 @@ module Comufy
       yaml = YAML.load_file(File.join(File.dirname(__FILE__), "yaml/config.yaml"))
       yaml = symbolize_keys(yaml)
 
-      puts params.inspect
-      puts yaml.inspect
-
       staging = params[:staging]
       no_env =  params[:no_env]
 

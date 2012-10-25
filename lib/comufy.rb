@@ -24,6 +24,10 @@ module Comufy
     @connector
   end
 
+  def self.connector
+    @connector
+  end
+
   # Based on Rails implementation, ensures all strings are converted
   # into symbols.
   def symbolize_keys hash
