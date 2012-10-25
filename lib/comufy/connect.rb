@@ -1,12 +1,13 @@
 module Comufy
   class Connect
+    include Comufy
 
     # Initialises the connection, setting up the configuration settings.
     #
     # @param [Hash] params Details below:
     #   SERVER
-    #   Pass :debug => true to run in debug mode, using the staging server
-    #   If you do not pass :debug => true it'll use the social server.
+    #   Pass :staging => true to run in debug mode, using the staging server
+    #   If you do not pass :staging it'll use the social server.
     #
     #   USER INFORMATION
     #   Pass :username => 'username' AND :password => 'password' to use that username and password.
@@ -20,14 +21,19 @@ module Comufy
     #   attempt to find them in your environment path. Note if you pass this, ensure you have your username
     #   and password correctly set as these are required to get the access_token.
     def initialize params = {}
+      params = symbolize_keys(params)
       @config = Config.new(params)
-      if params.has_key?(:debug)
-        @logger = Logger.new(STDOUT)
-        @logger.level = Logger::DEBUG
-      else
-        @logger = Logger.new(STDOUT)
-        @logger.level = Logger::WARN
-      end
+      @logger = Logger.new(STDOUT)
+      @logger.level = case params[:logger]
+                        when "info" then
+                          Logger::INFO
+                        when "warn" then
+                          Logger::WARN
+                        when "debug" then
+                          Logger::DEBUG
+                        else
+                          Logger::DEBUG
+    end
       # sanitize all output
       original_formatter = Logger::Formatter.new
       @logger.formatter = proc { |severity, datetime, progname, msg|
@@ -393,43 +399,66 @@ module Comufy
     # @param [Hash] opts -
     #   [Integer] delivery_time scheduled time of delivery defaults to now. (Unix millisecond timestamps)
     #   [Boolean] shorten_urls UNTRACKED if false, otherwise defaults to Comufy TRACKED
-    #   [Hash] fb_array -
+    #   [Hash] options -
     #     name: [String] facebook message name
     #     link: [String] Facebook message link
     #     caption: [String] facebook message caption
     #     description: [String] description of the message
-    #     picture: URL of the image that should appear on the image section of the message
-    #     privacy: whether the message should be sent private or not.
+    #     picture: [String] URL of the image that should appear on the image section of the message
+    #     privacy: [Boolean] whether the message should be sent private or not.
     #
     def send_facebook_message app_name, description, content, filter, opts = {}
-      if app_name.nil? or app_name.empty?
+      if app_name.nil? or app_name.empty? or not content.is_a?(String)
         @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
-          'First parameter must be set to your application name.'
+          'First parameter must be set to your application name, as a String.'
         }
         return false
       end
-      if description.nil? or description.empty?
+      if description.nil? or description.empty? or not content.is_a?(String)
         @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
-          'Second parameter must be set to your facebook description.'
+          'Second parameter must be set to your facebook description, as a String.'
         }
         return false
       end
-      if content.nil? or content.empty?
+      if content.nil? or content.empty? or not content.is_a?(String)
         @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
-          'Third parameter must be sent to your facebook content.'
+          'Third parameter must be sent to your facebook content, as a String.'
         }
         return false
       end
-      if filter.nil? or filter.empty?
+      if filter.nil? or filter.empty? or not content.is_a?(String)
         @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
-          'Fourth parameter must be the filter contents.'
+          'Fourth parameter must be the filter contents, as a String.'
         }
         return false
       end
 
-      shorten_urls =  opts.has_key?(:shorten_urls) ? opts[:shorten_urls] : true
+      # symbolize the keys!
+      opts = symbolize_keys(opts)
+
+      # optional checks
+      if opts.has_key?(:delivery_time) and not opts[:delivery_time].is_a?(Integer)
+        @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
+          'When including "delivery_time", it must be an Integer, of unix time in milliseconds.'
+        }
+        return false
+      end
+      if opts.has_key?(:shorten_urls) and not %w[ true, false ].include?(opts[:shorten_urls])
+        @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
+          'When including "shorten_urls", it must be an boolean value.'
+        }
+        return false
+      end
+      if opts.has_key?(:options) and not opts[:options].is_a?(Hash)
+        @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
+          'When including "options", it must be a Hash.'
+        }
+        return false
+      end
+
       delivery_time = opts[:delivery_time]
-      fb_array =      opts[:fb_array]       || Hash.new
+      shorten_urls =  opts.has_key?(:shorten_urls) ? opts[:shorten_urls] : true
+      options = opts[:options]
 
       data = {
           cd:              83,
@@ -442,12 +471,14 @@ module Comufy
       data[:deliveryTime] = delivery_time if delivery_time
       data[:trackingMode] = "UNTRACKED" unless shorten_urls
 
-      data[:fbMessagePrivacyMode] = fb_array[:private] ? "PRIVATE" : "PUBLIC" if fb_array.has_key?(:private)
-      data[:fbMessageCaption] = fb_array[:caption] if fb_array.has_key?(:caption)
-      data[:fbMessageLink] = fb_array[:link] if fb_array.has_key?(:link)
-      data[:fbMessageName] = fb_array[:name] if fb_array.has_key?(:name)
-      data[:fbMessageDescription] = fb_array[:description] if fb_array.has_key?(:description)
-      data[:fbMessagePictureUrl] = fb_array[:picture] if fb_array.has_key?(:picture)
+      if options
+        data[:fbMessagePrivacyMode] = options[:private] ? "PRIVATE" : "PUBLIC" if options.has_key?(:private)
+        data[:fbMessageCaption]     = options[:caption]                        if options.has_key?(:caption)
+        data[:fbMessageLink]        = options[:link]                           if options.has_key?(:link)
+        data[:fbMessageName]        = options[:name]                           if options.has_key?(:name)
+        data[:fbMessageDescription] = options[:description]                    if options.has_key?(:description)
+        data[:fbMessagePictureUrl]  = options[:picture]                        if options.has_key?(:picture)
+      end
 
       message = call_api(data)
       if message
