@@ -77,37 +77,46 @@ module Comufy
       }
 
       message = call_api(data)
-      case message['cd']
-        when 388 then
-          return true
-        when 475 then
-          @logger.debug(progname = 'Comufy::Connect.store_user') {
-            "475 - Invalid parameter provided. - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.store_user') {
-            '475 - Invalid parameter provided.'
-          }
-        when 617 then
-          @logger.debug(progname = 'Comufy::Connect.store_user') {
-            "617 - Some of the tags passed are not registered. - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.store_user') {
-            '617 - Some of the tags passed are not registered.'
-          }
-        when 632 then
-          @logger.debug(progname = 'Comufy::Connect.store_user') {
-            "632 - _ERROR_FACEBOOK_PAGE_NOT_FOUND - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.store_user') {
-            '632 - _ERROR_FACEBOOK_PAGE_NOT_FOUND'
-          }
-        else
-          @logger.debug(progname = 'Comufy::Connect.store_user') {
-            "UNKNOWN RESPONSE - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.store_user') {
-            "An error occurred when sending #{data}. Comufy returned #{message}. Please get in touch with Comufy if you cannot resolve the problem."
-          }
+      if message
+        case message['cd']
+          when 388 then
+            return true
+          when 475 then
+            @logger.debug(progname = 'Comufy::Connect.store_user') {
+              "475 - Invalid parameter provided. - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.store_user') {
+              '475 - Invalid parameter provided.'
+            }
+          when 617 then
+            @logger.debug(progname = 'Comufy::Connect.store_user') {
+              "617 - Some of the tags passed are not registered. - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.store_user') {
+              '617 - Some of the tags passed are not registered.'
+            }
+          when 632 then
+            @logger.debug(progname = 'Comufy::Connect.store_user') {
+              "632 - _ERROR_FACEBOOK_PAGE_NOT_FOUND - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.store_user') {
+              '632 - _ERROR_FACEBOOK_PAGE_NOT_FOUND'
+            }
+          else
+            @logger.debug(progname = 'Comufy::Connect.store_user') {
+              "UNKNOWN RESPONSE - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.store_user') {
+              "An error occurred when sending #{data}. Comufy returned #{message}. Please get in touch with Comufy if you cannot resolve the problem."
+            }
+        end
+      else
+        @logger.debug(progname = 'Comufy::Connect.store_user') {
+          "Authentication failed - data = #{data}."
+        }
+        @logger.warn(progname = 'Comufy::Connect.store_user') {
+          "Authentication failed when sending #{data}. Please get in touch with Comufy if you cannot resolve the problem."
+        }
       end
       false
     end
@@ -159,37 +168,46 @@ module Comufy
       }
 
       message = call_api(data)
-      case message['cd']
-        when 388 then
-          return true
-        when 475 then
-          @logger.debug(progname = 'Comufy::Connect.store_users') {
-            "603 - Invalid parameter provided. - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.store_users') {
-            '475 - Invalid parameter provided.'
-          }
-        when 617 then
-          @logger.debug(progname = 'Comufy::Connect.store_users') {
-            "617 - Some of the tags passed are not registered. - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.store_users') {
-            '617 - Some of the tags passed are not registered.'
-          }
-        when 632 then
-          @logger.debug(progname = 'Comufy::Connect.store_users') {
-            "632 - _ERROR_FACEBOOK_PAGE_NOT_FOUND - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.store_users') {
-            '632 - _ERROR_FACEBOOK_PAGE_NOT_FOUND'
-          }
-        else
-          @logger.debug(progname = 'Comufy::Connect.store_users') {
-            "UNKNOWN RESPONSE - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.store_users') {
-            "An error occurred when sending #{data}. Comufy returned #{message}. Please get in touch with Comufy if you cannot resolve the problem."
-          }
+      if message
+        case message['cd']
+          when 388 then
+            return true
+          when 475 then
+            @logger.debug(progname = 'Comufy::Connect.store_users') {
+              "603 - Invalid parameter provided. - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.store_users') {
+              '475 - Invalid parameter provided.'
+            }
+          when 617 then
+            @logger.debug(progname = 'Comufy::Connect.store_users') {
+              "617 - Some of the tags passed are not registered. - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.store_users') {
+              '617 - Some of the tags passed are not registered.'
+            }
+          when 632 then
+            @logger.debug(progname = 'Comufy::Connect.store_users') {
+              "632 - _ERROR_FACEBOOK_PAGE_NOT_FOUND - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.store_users') {
+              '632 - _ERROR_FACEBOOK_PAGE_NOT_FOUND'
+            }
+          else
+            @logger.debug(progname = 'Comufy::Connect.store_users') {
+              "UNKNOWN RESPONSE - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.store_users') {
+              "An error occurred when sending #{data}. Comufy returned #{message}. Please get in touch with Comufy if you cannot resolve the problem."
+            }
+        end
+      else
+        @logger.debug(progname = 'Comufy::Connect.store_users') {
+          "Authentication failed - data = #{data}."
+        }
+        @logger.warn(progname = 'Comufy::Connect.store_users') {
+          "Authentication failed when sending #{data}. Please get in touch with Comufy if you cannot resolve the problem."
+        }
       end
       false
     end
@@ -234,44 +252,53 @@ module Comufy
       }
 
       message = call_api(data)
-      case message['cd']
-        when 386 then
-          return true
-        when 475 then
-          @logger.debug(progname = 'Comufy::Connect.register_tags') {
-            "475 - Invalid parameters provided - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.register_tags') {
-            '475 - Invalid parameters provided'
-          }
-        when 603 then
-          @logger.debug(progname = 'Comufy::Connect.register_tags') {
-            "603 - _ERROR_DOMAIN_APPLICATION_NAME_NOT_FOUND - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.register_tags') {
-            '603 - _ERROR_DOMAIN_APPLICATION_NAME_NOT_FOUND'
-          }
-        when 607 then
-          @logger.debug(progname = 'Comufy::Connect.register_tags') {
-            "607 - _ERROR_UNAUTHORISED_ACTION - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.register_tags') {
-            '607 - _ERROR_UNAUTHORISED_ACTION'
-          }
-        when 618 then
-          @logger.debug(progname = 'Comufy::Connect.register_tags') {
-            "618 - _ERROR_DOMAIN_APPLICATION_TAG_ALREADY_REGISTERED - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.register_tags') {
-            '618 - _ERROR_DOMAIN_APPLICATION_TAG_ALREADY_REGISTERED'
-          }
-        else
-          @logger.debug(progname = 'Comufy::Connect.register_tags') {
-            "UNKNOWN RESPONSE - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.register_tags') {
-            "An error occurred when sending #{data}. Comufy returned #{message}. Please get in touch with Comufy if you cannot resolve the problem."
-          }
+      if message
+        case message['cd']
+          when 386 then
+            return true
+          when 475 then
+            @logger.debug(progname = 'Comufy::Connect.register_tags') {
+              "475 - Invalid parameters provided - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.register_tags') {
+              '475 - Invalid parameters provided'
+            }
+          when 603 then
+            @logger.debug(progname = 'Comufy::Connect.register_tags') {
+              "603 - _ERROR_DOMAIN_APPLICATION_NAME_NOT_FOUND - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.register_tags') {
+              '603 - _ERROR_DOMAIN_APPLICATION_NAME_NOT_FOUND'
+            }
+          when 607 then
+            @logger.debug(progname = 'Comufy::Connect.register_tags') {
+              "607 - _ERROR_UNAUTHORISED_ACTION - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.register_tags') {
+              '607 - _ERROR_UNAUTHORISED_ACTION'
+            }
+          when 618 then
+            @logger.debug(progname = 'Comufy::Connect.register_tags') {
+              "618 - _ERROR_DOMAIN_APPLICATION_TAG_ALREADY_REGISTERED - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.register_tags') {
+              '618 - _ERROR_DOMAIN_APPLICATION_TAG_ALREADY_REGISTERED'
+            }
+          else
+            @logger.debug(progname = 'Comufy::Connect.register_tags') {
+              "UNKNOWN RESPONSE - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.register_tags') {
+              "An error occurred when sending #{data}. Comufy returned #{message}. Please get in touch with Comufy if you cannot resolve the problem."
+            }
+        end
+      else
+        @logger.debug(progname = 'Comufy::Connect.register_tags') {
+          "Authentication failed - data = #{data}."
+        }
+        @logger.warn(progname = 'Comufy::Connect.register_tags') {
+          "Authentication failed when sending #{data}. Please get in touch with Comufy if you cannot resolve the problem."
+        }
       end
       false
     end
@@ -306,44 +333,53 @@ module Comufy
       }
 
       message = call_api(data)
-      case message['cd']
-        when 385 then
-          return true
-        when 475 then
-          @logger.debug(progname = 'Comufy::Connect.unregister_tag') {
-            "475 - Invalid parameters provided - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
-            '475 - Invalid parameters provided'
-          }
-        when 603 then
-          @logger.debug(progname = 'Comufy::Connect.unregister_tag') {
-            "603 - _ERROR_DOMAIN_APPLICATION_NAME_NOT_FOUND - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
-            '603 - _ERROR_DOMAIN_APPLICATION_NAME_NOT_FOUND'
-          }
-        when 607 then
-          @logger.debug(progname = 'Comufy::Connect.unregister_tag') {
-            "607 - _ERROR_UNAUTHORISED_ACTION - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
-            '607 - _ERROR_UNAUTHORISED_ACTION'
-          }
-        when 617 then
-          @logger.debug(progname = 'Comufy::Connect.unregister_tag') {
-            "617 - _ERROR_DOMAIN_APPLICATION_TAG_NOT_FOUND - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
-            '617 - _ERROR_DOMAIN_APPLICATION_TAG_NOT_FOUND'
-          }
-        else
-          @logger.debug(progname = 'Comufy::Connect.unregister_tag') {
-            "UNKNOWN RESPONSE - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
-            "An error occurred when sending #{data}. Comufy returned #{message}. Please get in touch with Comufy if you cannot resolve the problem."
-          }
+      if message
+        case message['cd']
+          when 385 then
+            return true
+          when 475 then
+            @logger.debug(progname = 'Comufy::Connect.unregister_tag') {
+              "475 - Invalid parameters provided - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
+              '475 - Invalid parameters provided'
+            }
+          when 603 then
+            @logger.debug(progname = 'Comufy::Connect.unregister_tag') {
+              "603 - _ERROR_DOMAIN_APPLICATION_NAME_NOT_FOUND - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
+              '603 - _ERROR_DOMAIN_APPLICATION_NAME_NOT_FOUND'
+            }
+          when 607 then
+            @logger.debug(progname = 'Comufy::Connect.unregister_tag') {
+              "607 - _ERROR_UNAUTHORISED_ACTION - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
+              '607 - _ERROR_UNAUTHORISED_ACTION'
+            }
+          when 617 then
+            @logger.debug(progname = 'Comufy::Connect.unregister_tag') {
+              "617 - _ERROR_DOMAIN_APPLICATION_TAG_NOT_FOUND - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
+              '617 - _ERROR_DOMAIN_APPLICATION_TAG_NOT_FOUND'
+            }
+          else
+            @logger.debug(progname = 'Comufy::Connect.unregister_tag') {
+              "UNKNOWN RESPONSE - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
+              "An error occurred when sending #{data}. Comufy returned #{message}. Please get in touch with Comufy if you cannot resolve the problem."
+            }
+        end
+      else
+        @logger.debug(progname = 'Comufy::Connect.unregister_tag') {
+          "Authentication failed - data = #{data}."
+        }
+        @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
+          "Authentication failed when sending #{data}. Please get in touch with Comufy if you cannot resolve the problem."
+        }
       end
       false
     end
@@ -353,17 +389,19 @@ module Comufy
     # @param [String] app_name application through which the message is sent
     # @param [String] description Description of the message. Useful to aggregate data in the Comufy dashboard. e.g. "Welcome"
     # @param [String] content text message content
-    # @param [Integer] delivery_time scheduled time of delivery defaults to now. (Unix millisecond timestamps)
-    # @param [Boolean] shorten_urls UNTRACKED if false, otherwise defaults to Comufy TRACKED
-    # @param [Hash] fb_array -
-    #   name: [String] facebook message name
-    #   link: [String] Facebook message link
-    #   caption: [String] facebook message caption
-    #   description: [String] description of the message
-    #   picture: URL of the image that should appear on the image section of the message
-    #   privacy: whether the message should be sent private or not.
-    # @param [String] filter filtering condition in CFL
-    def send_facebook_message app_name, description, content, delivery_time = String(Time.now.to_i), shorten_urls = true, fb_array = {}, filter = ""
+    # @param [Hash] opts -
+    #   [Integer] delivery_time scheduled time of delivery defaults to now. (Unix millisecond timestamps)
+    #   [Boolean] shorten_urls UNTRACKED if false, otherwise defaults to Comufy TRACKED
+    #   [String] filter filtering condition in CFL
+    #   [Hash] fb_array -
+    #     name: [String] facebook message name
+    #     link: [String] Facebook message link
+    #     caption: [String] facebook message caption
+    #     description: [String] description of the message
+    #     picture: URL of the image that should appear on the image section of the message
+    #     privacy: whether the message should be sent private or not.
+    #
+    def send_facebook_message app_name, description, content, opts = {}
       if app_name.nil? or app_name.empty?
         @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
           'First parameter must be set to your application name.'
@@ -382,6 +420,11 @@ module Comufy
         }
         return false
       end
+
+      shorten_urls =  opts.has_key?(:shorten_urls) ? opts[:shorten_urls] : true
+      delivery_time = opts[:delivery_time]  || 0
+      fb_array =      opts[:fb_array]       || Hash.new
+      filter =        opts[:filter]         || String.new
 
       data = {
           cd:              83,
@@ -402,72 +445,81 @@ module Comufy
       data[:fbMessagePictureUrl] = fb_array[:picture] if fb_array.has_key?(:picture)
 
       message = call_api(data)
-      case message['cd']
-        when 383 then
-          return true
-        when 416 then
-          @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
-            "416 - _ERROR_MSG_SEND_FAILED - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
-            '416 - _ERROR_MSG_SEND_FAILED'
-          }
-        when 475 then
-          @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
-            "475 - Invalid parameters provided - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
-            '475 - Invalid parameters provided'
-          }
-        when 551 then
-          @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
-            "551 _ERROR_TAG_VALUE_NOT_FOUND - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
-            '551 - _ERROR_TAG_VALUE_NOT_FOUND'
-          }
-        when 603 then
-          @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
-            "603 - _ERROR_DOMAIN_APPLICATION_NAME_NOT_FOUND - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
-            '603 - _ERROR_DOMAIN_APPLICATION_NAME_NOT_FOUND'
-          }
-        when 607 then
-          @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
-            "607 - _ERROR_UNAUTHORISED_ACTION - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
-            '607 - _ERROR_UNAUTHORISED_ACTION'
-          }
-        when 617 then
-          @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
-            "617 - _ERROR_DOMAIN_APPLICATION_TAG_NOT_FOUND - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
-            '617 - _ERROR_DOMAIN_APPLICATION_TAG_NOT_FOUND'
-          }
-        when 648 then
-          @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
-            "648 - _ERROR_FACEBOOK_APPLICATION_USER_NOT_FOUND - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
-            '648 - _ERROR_FACEBOOK_APPLICATION_USER_NOT_FOUND'
-          }
-        when 679 then
-          @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
-            "679 - _ERROR_MALFORMED_TARGETING_EXPRESSION - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
-            '679 - _ERROR_MALFORMED_TARGETING_EXPRESSION'
-          }
-        else
-          @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
-            "UNKNOWN RESPONSE - data = #{data} - message = #{message}."
-          }
-          @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
-            "An error occurred when sending #{data}. Comufy returned #{message}. Please get in touch with Comufy if you cannot resolve the problem."
-          }
+      if message
+        case message['cd']
+          when 383 then
+            return true
+          when 416 then
+            @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
+              "416 - _ERROR_MSG_SEND_FAILED - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
+              '416 - _ERROR_MSG_SEND_FAILED'
+            }
+          when 475 then
+            @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
+              "475 - Invalid parameters provided - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
+              '475 - Invalid parameters provided'
+            }
+          when 551 then
+            @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
+              "551 _ERROR_TAG_VALUE_NOT_FOUND - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
+              '551 - _ERROR_TAG_VALUE_NOT_FOUND'
+            }
+          when 603 then
+            @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
+              "603 - _ERROR_DOMAIN_APPLICATION_NAME_NOT_FOUND - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
+              '603 - _ERROR_DOMAIN_APPLICATION_NAME_NOT_FOUND'
+            }
+          when 607 then
+            @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
+              "607 - _ERROR_UNAUTHORISED_ACTION - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
+              '607 - _ERROR_UNAUTHORISED_ACTION'
+            }
+          when 617 then
+            @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
+              "617 - _ERROR_DOMAIN_APPLICATION_TAG_NOT_FOUND - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
+              '617 - _ERROR_DOMAIN_APPLICATION_TAG_NOT_FOUND'
+            }
+          when 648 then
+            @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
+              "648 - _ERROR_FACEBOOK_APPLICATION_USER_NOT_FOUND - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
+              '648 - _ERROR_FACEBOOK_APPLICATION_USER_NOT_FOUND'
+            }
+          when 679 then
+            @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
+              "679 - _ERROR_MALFORMED_TARGETING_EXPRESSION - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
+              '679 - _ERROR_MALFORMED_TARGETING_EXPRESSION'
+            }
+          else
+            @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
+              "UNKNOWN RESPONSE - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
+              "An error occurred when sending #{data}. Comufy returned #{message}. Please get in touch with Comufy if you cannot resolve the problem."
+            }
+        end
+      else
+        @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
+          "Authentication failed - data = #{data}."
+        }
+        @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
+          "Authentication failed when sending #{data}. Please get in touch with Comufy if you cannot resolve the problem."
+        }
       end
       false
     end
@@ -497,6 +549,13 @@ module Comufy
               }
               @logger.warn(progname = 'Comufy::Connect.authenticate') {
                 '475 - Invalid parameters provided.'
+              }
+            when 504 then
+              @logger.debug(progname = 'Comufy::Connect.authenticate') {
+                "504 - FIX. - data = #{data} - message = #{message}."
+              }
+              @logger.warn(progname = 'Comufy::Connect.authenticate') {
+                '504 - FIX.'
               }
             when 651 then
               @logger.debug(progname = 'Comufy::Connect.authenticate') {
