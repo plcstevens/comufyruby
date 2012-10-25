@@ -389,10 +389,10 @@ module Comufy
     # @param [String] app_name application through which the message is sent
     # @param [String] description Description of the message. Useful to aggregate data in the Comufy dashboard. e.g. "Welcome"
     # @param [String] content text message content
+    # @param [String] filter filtering condition in CFL
     # @param [Hash] opts -
     #   [Integer] delivery_time scheduled time of delivery defaults to now. (Unix millisecond timestamps)
     #   [Boolean] shorten_urls UNTRACKED if false, otherwise defaults to Comufy TRACKED
-    #   [String] filter filtering condition in CFL
     #   [Hash] fb_array -
     #     name: [String] facebook message name
     #     link: [String] Facebook message link
@@ -401,7 +401,7 @@ module Comufy
     #     picture: URL of the image that should appear on the image section of the message
     #     privacy: whether the message should be sent private or not.
     #
-    def send_facebook_message app_name, description, content, opts = {}
+    def send_facebook_message app_name, description, content, filter, opts = {}
       if app_name.nil? or app_name.empty?
         @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
           'First parameter must be set to your application name.'
@@ -420,22 +420,27 @@ module Comufy
         }
         return false
       end
+      if filter.nil? or filter.empty?
+        @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
+          'Fourth parameter must be the filter contents.'
+        }
+        return false
+      end
 
       shorten_urls =  opts.has_key?(:shorten_urls) ? opts[:shorten_urls] : true
-      delivery_time = opts[:delivery_time]  || 0
+      delivery_time = opts[:delivery_time]
       fb_array =      opts[:fb_array]       || Hash.new
-      filter =        opts[:filter]         || String.new
 
       data = {
           cd:              83,
           applicationName: app_name,
-          desc:            description,
+          description:     description,
           content:         content,
-          deliveryTime:    delivery_time
+          filter:          filter
       }
 
+      data[:deliveryTime] = delivery_time if delivery_time
       data[:trackingMode] = "UNTRACKED" unless shorten_urls
-      data[:filter] = filter unless filter.nil? or filter.empty?
 
       data[:fbMessagePrivacyMode] = fb_array[:private] ? "PRIVATE" : "PUBLIC" if fb_array.has_key?(:private)
       data[:fbMessageCaption] = fb_array[:caption] if fb_array.has_key?(:caption)
@@ -497,6 +502,13 @@ module Comufy
             }
             @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
               '648 - _ERROR_FACEBOOK_APPLICATION_USER_NOT_FOUND'
+            }
+          when 673 then
+            @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
+              "673 - Invalid time exception - data = #{data} - message = #{message}."
+            }
+            @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
+              '673 - Invalid time exception'
             }
           when 679 then
             @logger.debug(progname = 'Comufy::Connect.send_facebook_message') {
@@ -600,7 +612,7 @@ module Comufy
         def call_api data, add_access_token=true
           if add_access_token
             return nil if not get_access_token
-            data['token'] = @config.access_token
+            data[:token] = @config.access_token
           end
           json = CGI::escape(data.to_json)
           url = URI.parse("#{@config::base_api_url}#{json}")

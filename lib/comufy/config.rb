@@ -6,11 +6,11 @@ module Comufy
     # Sets the environment settings for Comufy to send and receive messages.
     # @param [Hash] params
     def initialize params = {}
-      #if params.has_key?(:debug)
+      if params.has_key?(:debug)
         @base_api_url = 'https://staging.comufy.com/xcoreweb/client?request='
-      #else
+      else
         @base_api_url = 'https://social.comufy.com/xcoreweb/client?request='
-      #end
+      end
 
       yaml = YAML.load_file(File.join(File.dirname(__FILE__), "yaml/config.yaml"))
       if params.has_key?(:username) and params.has_key?(:password)
