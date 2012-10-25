@@ -1,6 +1,5 @@
 module Comufy
   class Config
-    include Comufy
 
     attr_reader :username, :password, :base_api_url, :logger
     attr_accessor :access_token, :expiry_time
