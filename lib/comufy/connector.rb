@@ -1,5 +1,5 @@
 module Comufy
-  class Connect
+  class Connector
     include Comufy
 
     # Initialises the connection, setting up the configuration settings.
@@ -132,6 +132,7 @@ module Comufy
     # @param [String] app_name application on which to remove a user
     # @param [String] uid the facebook user id of the user to remove
     def remove_user app_name, uid
+      return false unless get_access_token
       @logger.warn(progname = 'Comufy::Connect.remove_user') {
           'METHOD_NOT_IMPLEMENTED'
       }
@@ -318,6 +319,7 @@ module Comufy
     # @param [String] app_name application on which to unregister a tag
     # @param [String] tag the tag to unregister
     def unregister_tag app_name, tag
+      return false unless get_access_token
       if app_name.nil? or app_name.empty?
         @logger.warn(progname = 'Comufy::Connect.unregister_tag') {
           'First parameter must be set to your application name.'
@@ -408,6 +410,7 @@ module Comufy
     #     privacy: [Boolean] whether the message should be sent private or not.
     #
     def send_facebook_message app_name, description, content, filter, opts = {}
+      return false unless get_access_token
       if app_name.nil? or app_name.empty? or not content.is_a?(String)
         @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
           'First parameter must be set to your application name, as a String.'

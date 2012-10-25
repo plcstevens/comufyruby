@@ -1,6 +1,6 @@
 require "comufy/version"
 require "comufy/config"
-require "comufy/connect"
+require "comufy/connector"
 
 require 'yaml'
 require 'json'
@@ -10,6 +10,19 @@ require 'cgi'
 require 'logger'
 
 module Comufy
+
+  def self.connect params = {}
+    # initialise the connector and keep hold of the parameters
+    @params ||= params
+    @connector ||= self::Connector.new(@params)
+
+    # if you pass in different parameters, recreate the object
+    if @params != params
+      @params = params
+      @connector = self::Connector.new(@params)
+    end
+    @connector
+  end
 
   # Based on Rails implementation, ensures all strings are converted
   # into symbols.
