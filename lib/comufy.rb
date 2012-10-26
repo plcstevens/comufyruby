@@ -11,21 +11,12 @@ require 'logger'
 
 module Comufy
 
-  def self.connect params = {}
-    # initialise the connector and keep hold of the parameters
-    @params ||= params
-    @connector ||= self::Connector.new(@params)
-
-    # if you pass in different parameters, recreate the object
-    if @params != params
-      @params = params
-      @connector = self::Connector.new(@params)
-    end
-    @connector
+  def self.connector params = {}
+    @connector ||= Connector.new(params)
   end
 
-  def self.connector
-    @connector
+  def self.new_connector params = {}
+    @connector = Connector.new(params)
   end
 
   # Based on Rails implementation, ensures all strings are converted
