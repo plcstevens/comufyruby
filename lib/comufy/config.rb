@@ -13,8 +13,13 @@ module Comufy
     #   [Object] no_env - as long as this is a value other than false/nil it'll not use environment values
     def initialize params = {}
       params = symbolize_keys(params)
-      yaml = YAML.load_file(File.join(File.dirname(__FILE__), "yaml/config.yaml"))
-      yaml = symbolize_keys(yaml)
+      begin
+        yaml_location = params[:yaml_location] || File.join(File.dirname(__FILE__), "yaml/config.yaml")
+        yaml = YAML.load_file(yaml_location)
+        yaml = symbolize_keys(yaml)
+      rescue
+        yaml = Hash.new()
+      end
 
       staging = params[:staging]
       no_env =  params[:no_env]
