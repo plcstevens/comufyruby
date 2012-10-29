@@ -133,9 +133,14 @@ module Comufy
     # @param [String] uid the facebook user id of the user to remove
     def remove_user app_name, uid
       return false unless get_access_token
+      @logger.debug(progname = 'Comufy::Connect.remove_user') {
+        'METHOD_NOT_IMPLEMENTED'
+      }
       @logger.warn(progname = 'Comufy::Connect.remove_user') {
           'METHOD_NOT_IMPLEMENTED'
       }
+      app_name
+      uid
       false
     end
 
@@ -481,6 +486,7 @@ module Comufy
         data[:fbMessageName]        = options[:name]                           if options.has_key?(:name)
         data[:fbMessageDescription] = options[:description]                    if options.has_key?(:description)
         data[:fbMessagePictureUrl]  = options[:picture]                        if options.has_key?(:picture)
+        data[:facebookTargetingMode] = "NOTIFICATION"
       end
 
       message = call_api(data)
