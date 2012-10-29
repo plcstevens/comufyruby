@@ -45,8 +45,8 @@ module Comufy
                         when "debug" then
                           Logger::DEBUG
                         else
-                          Logger::DEBUG
-    end
+                          Logger::WARN
+                      end
       # sanitize all output
       original_formatter = Logger::Formatter.new
       @logger.formatter = proc { |severity, datetime, progname, msg|
@@ -506,7 +506,7 @@ module Comufy
       end
       if opts.has_key?(:message_options) and not opts[:message_options].is_a?(Hash)
         @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
-          'When including "options", it must be a Hash.'
+          'When including "message_options", it must be a Hash.'
         }
         return false
       end

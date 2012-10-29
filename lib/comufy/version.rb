@@ -1,3 +1,3 @@
 module Comufy
-  VERSION = "0.0.2b"
+  VERSION = "0.0.2.pre1"
 end

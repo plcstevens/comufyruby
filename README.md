@@ -1,6 +1,6 @@
 # Comufyruby
 
-TODO: Write a gem description
+This library allows customers to interact with the Comufy backend and perform common operations.
 
 ## Installation
 
@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+
 
 ## Contributing
 
