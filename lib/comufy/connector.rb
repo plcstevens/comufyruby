@@ -65,7 +65,7 @@ module Comufy
     #
     # = Example
     #
-    #   connect.store_users(YOUR_APPLICATION_NAME, USER_FACEBOOK_ID, { 'dob' => '1978-10-01 19:50:48' })
+    #   Comufy::Connector.store_users(YOUR_APPLICATION_NAME, USER_FACEBOOK_ID, { 'dob' => '1978-10-01 19:50:48' })
     def store_user app_name, uid, tags
       return false unless get_access_token
       if app_name.nil? or app_name.empty?
@@ -167,7 +167,7 @@ module Comufy
     #
     # = Example
     #
-    #   connect.store_users(
+    #   Comufy::Connector.store_users(
     #     YOUR_APPLICATION_NAME,
     #     { USER_ID => { 'dob' => '1978-10-01 19:50:48' }, OTHER_USER_ID => { 'dob' => '1978-10-01 19:50:48'}}
     #   )
@@ -246,7 +246,7 @@ module Comufy
     #   * (String) +type+ - Must be one of the following: STRING, DATE, GENDER, INT, FLOAT.
     #
     # = Example
-    #   connect.register_tags(
+    #   Comufy::Connector.register_tags(
     #     YOUR_APPLICATION_NAME,
     #     [{
     #       'name' => 'dob',
@@ -354,7 +354,7 @@ module Comufy
     # * (String) +tag+ - The tag to remove from the user.
     #
     # = Example
-    #   connect.unregister_tag(YOUR_APPLICATION_NAME, 'dob')
+    #   Comufy::Connector.unregister_tag(YOUR_APPLICATION_NAME, 'dob')
     def unregister_tag app_name, tag
       return false unless get_access_token
       if app_name.nil? or app_name.empty?
@@ -447,6 +447,14 @@ module Comufy
     #     * (String) +description+ - description of the message.
     #     * (String) +picture+ - URL of the image that should appear on the image section of the message.
     #     * (Boolean) +privacy+ -  whether the message should be sent private or not.
+    #
+    # = Example
+    #    Comufy::Connector.send_facebook_message(
+    #      YOUR_APPLICATION_NAME, DESCRIPTION, CONTENT_GOES_HERE, %w(ID_ONE ID_TWO),
+    #      message_options: {
+    #        private: true, link: 'www.example.com', name: 'test', description: 'description'
+    #      }
+    #    )
     def send_facebook_message app_name, description, content, uids, opts = {}
       return false unless get_access_token
       if app_name.nil? or app_name.empty? or not content.is_a?(String)
