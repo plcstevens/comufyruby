@@ -2,24 +2,37 @@ module Comufy
   class Connector
     include Comufy
 
-    # Initialises the connection, setting up the configuration settings.
+    # There are a number of options you can pass to change default settings.
     #
-    # @param [Hash] params Details below:
-    #   SERVER
-    #   Pass :staging => true to run in debug mode, using the staging server
-    #   If you do not pass :staging it'll use the social server.
+    # With regards to the server to connect to, if you pass <tt>staging: true</tt> it'll use the Comufy
+    # staging server, otherwise it'll default to using the social server.
     #
-    #   USER INFORMATION
-    #   Pass :username => 'username' AND :password => 'password' to use that username and password.
-    #   Otherwise it'll read the username/password from the yaml/config.yaml file you should
-    #   supply in the format below.
+    # Concerning authentication, there are a number of ways to connect to the Comufy servers. You can
+    # pass in a username and password in the parameters, provide the location of a YAML file where these are
+    # specified or read in the <tt>access_token</tt> from your environment path. Please note that you can stop
+    # the connector from reading your environment path by setting <tt>no_env</tt> to true. When doing this please
+    # ensure your username and password are correct, otherwise you'll not be able to connect to the Comufy servers.
+    #
+    # The YAML file provided should appear as:
     #   config:
     #     username: username
     #     password: password
     #
-    #   If you pass :no_env => true, it'll set the access_token and expiry_time to nil, otherwise it'll
-    #   attempt to find them in your environment path. Note if you pass this, ensure you have your username
-    #   and password correctly set as these are required to get the access_token.
+    # = Example
+    #
+    #   # use the staging server
+    #   Comufy::Connector.new(staging: true)
+    #
+    #   # do not use the environment path
+    #   Comufy::Connector.new(no_env: true)
+    #
+    #   # set the username and password yourself
+    #   Comufy::Connector.new(username: YOUR_USERNAME, password: YOUR_PASSWORD)
+    #
+    #   # Or you can read in from a YAML file!
+    #
+    #   # tell the connector where to find the yaml file to read
+    #   Comufy::Connector.new(yaml: PATH_TO_YAML_FILE)
     def initialize params = {}
       params = symbolize_keys(params)
       @config = Config.new(params)
@@ -41,16 +54,18 @@ module Comufy
       }
     end
 
-    #
     # This API call allows you to register a Facebook user of your application into Comufy’s social CRM.
-    # If this user was already registered into Comufy, their information will be updated.
+    # If this user was already registered with Comufy, their information will be updated.
     #
-    # Example:
-    # connect.store_users('Facebook Application Name', '1010101', { 'dob' => '1978-10-01 19:50:48' })
+    # * (String) +app_name+ - The application you'll be adding the user to.
+    # * (String) +uid+ - The Facebook ID of the user you'll be adding.
+    # * (Hash) +tags+ - The tags you'll setting for this user.
+    #   * (String) +tag_name+ - Must correspond to one of the tag names of the application.
+    #   * (String) +value+ - Must be the correct value type for that tag.
     #
-    # @param [String] app_name application name on which to add the user
-    # @param [String] uid the facebook user id of the user
-    # @param [Hash] tags the tags to apply to that user.
+    # = Example
+    #
+    #   connect.store_users(YOUR_APPLICATION_NAME, USER_FACEBOOK_ID, { 'dob' => '1978-10-01 19:50:48' })
     def store_user app_name, uid, tags
       return false unless get_access_token
       if app_name.nil? or app_name.empty?
@@ -128,10 +143,7 @@ module Comufy
     end
 
     # TODO: IMPLEMENT METHOD
-    #
-    # @param [String] app_name application on which to remove a user
-    # @param [String] uid the facebook user id of the user to remove
-    def remove_user app_name, uid
+    def remove_user app_name, uid # :nodoc:
       return false unless get_access_token
       @logger.debug(progname = 'Comufy::Connect.remove_user') {
         'METHOD_NOT_IMPLEMENTED'
@@ -145,18 +157,20 @@ module Comufy
     end
 
     #
-    # This API call allows you to register a Facebook user of your application into Comufy’s social CRM.
-    # If this user was already registered into Comufy, their information will be updated.
+    # This API call allows you to register multiple Facebook users of your application into Comufy’s social CRM.
+    # If these users were already registered into Comufy, their information will be updated.
     #
-    # Example:
-    # connect.store_users(
-    #   'Facebook Application Name',
-    #   { '1010101' => { 'dob' => '1978-10-01 19:50:48' }, '2020202' => { 'dob' => '1978-10-01 19:50:48'}}
-    # )
+    # * (String) +app_name+ - The application you wish to store these users with.
+    # * (Hash) +uid_tags+ - The users you wish to add with their corresponding tag data.
+    #   * (String) +uid+ - The key is the Facebook ID of the user.
+    #   * (Hash) +tags+ - The value is the tags of data to apply for that user.
     #
-    # @param [String] app_name application in which to store users
-    # @param [Hash] uid_tags hash where the key is the facebook user id and the value a hash of tags/values to apply
-    #                        for that user id.
+    # = Example
+    #
+    #   connect.store_users(
+    #     YOUR_APPLICATION_NAME,
+    #     { USER_ID => { 'dob' => '1978-10-01 19:50:48' }, OTHER_USER_ID => { 'dob' => '1978-10-01 19:50:48'}}
+    #   )
     def store_users app_name, uid_tags
       return false unless get_access_token
       if app_name.nil? or app_name.empty?
@@ -226,21 +240,23 @@ module Comufy
 
     # Registering a Facebook application tag allows you to store data-fields about each one of your customers.
     #
-    # Example:
-    # connect.register_tags(
-    #   'Facebook Application Name',
-    #   [{
-    #     'name' => 'dob',
-    #     'type' => 'DATE'
-    #   },
-    #   {
-    #     'name' => 'height',
-    #     'type' => 'FLOAT'
-    #   }]
-    # )
+    # * (String) +app_name+ - The application you wish to register the tags with.
+    # * (Array) +tags+ - The tags you wish to register, each of which must be a (Hash) containing two keys.
+    #   * (String) +name+ - The name for the tag.
+    #   * (String) +type+ - Must be one of the following: STRING, DATE, GENDER, INT, FLOAT.
     #
-    # @param [String] app_name application to register tags with
-    # @param [Array] tags contains multiple hashes where each has two key/pairs, 'name' and 'type'
+    # = Example
+    #   connect.register_tags(
+    #     YOUR_APPLICATION_NAME,
+    #     [{
+    #       'name' => 'dob',
+    #       'type' => 'DATE'
+    #     },
+    #     {
+    #       'name' => 'height',
+    #       'type' => 'FLOAT'
+    #     }]
+    #   )
     def register_tags app_name, tags
       return false unless get_access_token
       if app_name.nil? or app_name.empty?
@@ -254,6 +270,22 @@ module Comufy
           'Second parameter must be an array containing hashes.'
         }
         return false
+      end
+      tags.each do |tag|
+        tag.each do |key, value|
+          unless %w(name type).include?(key)
+            @logger.warn(progname = 'Comufy::Connect.register_tags') {
+              'You must have only two keys called "name" and "type".'
+            }
+            return false
+          end
+          if key == "type" and not %w(STRING DATE GENDER INT FLOAT).include?(value)
+            @logger.warn(progname = 'Comufy::Connect.register_tags') {
+              'Your type must be one of these values: STRING, DATE, GENDER, INT, FLOAT.'
+            }
+            return false
+          end
+        end
       end
 
       data = {
@@ -318,11 +350,11 @@ module Comufy
     #
     # This API call will unregister an existing application tag. All data associated with the tag will be lost.
     #
-    # Example:
-    # connect.register_tags('Facebook Application Name', 'dob')
+    # * (String) +app_name+ - The application on which to remove the tag.
+    # * (String) +tag+ - The tag to remove from the user.
     #
-    # @param [String] app_name application on which to unregister a tag
-    # @param [String] tag the tag to unregister
+    # = Example
+    #   connect.unregister_tag(YOUR_APPLICATION_NAME, 'dob')
     def unregister_tag app_name, tag
       return false unless get_access_token
       if app_name.nil? or app_name.empty?
@@ -397,24 +429,25 @@ module Comufy
       false
     end
 
+    # Sends a message with the description and content to the facebook id or id's specified, allowing multiple
+    # options to be set concerning the privacy, and content of the message.
     #
-    #
-    # @param [String] app_name application through which the message is sent
-    # @param [String] description Description of the message. Useful to aggregate data in the Comufy dashboard. e.g. "Welcome"
-    # @param [String] content text message content
-    # @param [String] filter filtering condition in CFL
-    # @param [Hash] opts -
-    #   [Integer] delivery_time scheduled time of delivery defaults to now. (Unix millisecond timestamps)
-    #   [Boolean] shorten_urls UNTRACKED if false, otherwise defaults to Comufy TRACKED
-    #   [Hash] options -
-    #     name: [String] facebook message name
-    #     link: [String] Facebook message link
-    #     caption: [String] facebook message caption
-    #     description: [String] description of the message
-    #     picture: [String] URL of the image that should appear on the image section of the message
-    #     privacy: [Boolean] whether the message should be sent private or not.
-    #
-    def send_facebook_message app_name, description, content, filter, opts = {}
+    # * (String) +app_name+ - The application through the message is sent.
+    # * (String) +description+ - Description of the message. Useful to aggregate data in the Comufy dashboard. e.g. "Welcome".
+    # * (String) +content+ - The text message content.
+    # * (Array) +uids+ - The Facebook IDs of the users to send the message to.
+    # * (Hash) +opts+ - Optional settings you can pass.
+    #   * (Integer) +delivery_time+ - The scheduled time of delivery defaults to now. (Unix millisecond timestamps)
+    #   * (Boolean) +shorten_urls+ - UNTRACKED if false, otherwise defaults to Comufy TRACKED
+    #   * (String) +filter+ - filtering condition in CFL.
+    #   * (Hash) +message_options+ - options to set for the message especially.
+    #     * (String) +name+ - facebook message name.
+    #     * (String) +link+ - Facebook message link.
+    #     * (String) +caption+ - facebook message caption.
+    #     * (String) +description+ - description of the message.
+    #     * (String) +picture+ - URL of the image that should appear on the image section of the message.
+    #     * (Boolean) +privacy+ -  whether the message should be sent private or not.
+    def send_facebook_message app_name, description, content, uids, opts = {}
       return false unless get_access_token
       if app_name.nil? or app_name.empty? or not content.is_a?(String)
         @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
@@ -434,9 +467,9 @@ module Comufy
         }
         return false
       end
-      if filter.nil? or filter.empty? or not content.is_a?(String)
+      if uids.nil? or uids.empty? or not uids.is_a?(Array)
         @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
-          'Fourth parameter must be the filter contents, as a String.'
+          'Fourth parameter must be sent to your facebook uids, as an Array of Strings.'
         }
         return false
       end
@@ -445,6 +478,12 @@ module Comufy
       opts = symbolize_keys(opts)
 
       # optional checks
+      if opts.has_key?(:filter) and not opts[:filter].is_a?(String)
+        @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
+          'When including "filter", it must be a String.'
+        }
+        return false
+      end
       if opts.has_key?(:delivery_time) and not opts[:delivery_time].is_a?(Integer)
         @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
           'When including "delivery_time", it must be an Integer, of unix time in milliseconds.'
@@ -457,23 +496,26 @@ module Comufy
         }
         return false
       end
-      if opts.has_key?(:options) and not opts[:options].is_a?(Hash)
+      if opts.has_key?(:message_options) and not opts[:message_options].is_a?(Hash)
         @logger.warn(progname = 'Comufy::Connect.send_facebook_message') {
           'When including "options", it must be a Hash.'
         }
         return false
       end
 
+      facebook_ids = "FACEBOOK_ID=\"#{uids.join('\" OR FACEBOOK_ID=\"')}\""
+
+      filter = opts[:filter] || String.new()
       delivery_time = opts[:delivery_time]
       shorten_urls =  opts.has_key?(:shorten_urls) ? opts[:shorten_urls] : true
-      options = opts[:options]
+      options = opts[:message_options]
 
       data = {
           cd:              83,
           applicationName: app_name,
           description:     description,
           content:         content,
-          filter:          filter
+          filter:          "#{facebook_ids} #{filter}"
       }
 
       data[:deliveryTime] = delivery_time if delivery_time

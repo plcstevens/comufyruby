@@ -15,7 +15,7 @@ module Comufy
       params = symbolize_keys(params)
 
       begin
-        yaml_location = params[:yaml_location] || File.join(File.dirname(__FILE__), "yaml/config.yaml")
+        yaml_location = params[:yaml] || File.join(File.dirname(__FILE__), "yaml/config.yaml")
         yaml = YAML.load_file(yaml_location)
         yaml = symbolize_keys(yaml)
       rescue
@@ -23,12 +23,21 @@ module Comufy
         yaml = Hash.new()
       end
 
-      @username = params[:username] || yaml.fetch(:config, {})['username']
-      @password = params[:password] || yaml.fetch(:config, {})['password']
-      @access_token = params[:no_env] ? nil : ENV.fetch('access_token',  nil)
-      @expiry_time = params[:no_env] ? nil : ENV.fetch('expiry_time',   nil)
+      username = params[:username]
+      password = params[:password]
+      no_env = params[:no_env]
+      staging = params[:staging]
 
-      params[:staging] ?
+      if (username and not password) or (password and not username)
+        raise "You must supply both a username and password."
+      end
+
+      @username = username || yaml.fetch(:config, {})['username']
+      @password = password || yaml.fetch(:config, {})['password']
+      @access_token = no_env ? nil : ENV.fetch('access_token',  nil)
+      @expiry_time = no_env ? nil : ENV.fetch('expiry_time',   nil)
+
+      staging ?
           @base_api_url = 'https://staging.comufy.com/xcoreweb/client?request=' :
           @base_api_url = 'https://social.comufy.com/xcoreweb/client?request='
 
