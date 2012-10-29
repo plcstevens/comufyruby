@@ -630,8 +630,6 @@ module Comufy
 
         # Use the configured username and password to get and set the access token and expiry time, if it fails,
         # it means the user likely has their username/password wrong.
-        #
-        # @return [Boolean] True when successful, false in all other cases.
         def authenticate
           data = {
               cd:       131,
@@ -696,9 +694,8 @@ module Comufy
 
         # Calls the Comufy backed with the provided set of parameters, which the system will expect
         #
-        # @param [Array] params Data to pass to the server
-        # @param [Boolean] add_access_token Whether or not the access token should be provided, default is True
-        # @return [Hash/Array] The message from the server, or nil if it failed to contact the server
+        # * (Array) +params+ - Data to be passed to the server.
+        # * (Boolean) +add_access_token+ - (Optional) Whether or not the access token should be provided.
         def call_api data, add_access_token=true
           if add_access_token
             return nil if not get_access_token
@@ -713,9 +710,7 @@ module Comufy
           JSON.parse(response.read_body) if response.message == 'OK'
         end
 
-        # Checks that the token is not expired, and authenticates if it is
-        #
-        # @return [Boolean] False when unable to authenticate, true otherwise
+        # Checks that the token is not expired, and if expired, force an authentication.
         def get_access_token
           return authenticate if has_token_expired
           true
@@ -723,8 +718,6 @@ module Comufy
 
         # If the expiry time is set, and hasn't been reached, return false, otherwise
         # reset the access_token and expiry time,
-        #
-        # @return [Boolean] True if expired, otherwise false
         def has_token_expired
           return false if @config.expiry_time != nil and Time.at(@config.expiry_time) > Time.now
           @config.expiry_time = nil
