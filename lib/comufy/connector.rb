@@ -528,6 +528,7 @@ module Comufy
 
       data[:deliveryTime] = delivery_time if delivery_time
       data[:trackingMode] = "UNTRACKED" unless shorten_urls
+      data[:facebookTargetingMode] = "NOTIFICATION"
 
       if options
         data[:fbMessagePrivacyMode] = options[:private] ? "PRIVATE" : "PUBLIC" if options.has_key?(:private)
@@ -536,7 +537,6 @@ module Comufy
         data[:fbMessageName]        = options[:name]                           if options.has_key?(:name)
         data[:fbMessageDescription] = options[:description]                    if options.has_key?(:description)
         data[:fbMessagePictureUrl]  = options[:picture]                        if options.has_key?(:picture)
-        data[:facebookTargetingMode] = "NOTIFICATION"
       end
 
       message = call_api(data)
