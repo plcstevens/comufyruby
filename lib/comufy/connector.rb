@@ -19,14 +19,14 @@ module Comufy
     # staging server, otherwise it'll default to using the social server.
     #
     # Concerning authentication, there are a number of ways to connect to the Comufy servers. You can
-    # pass in a username and password in the parameters, provide the location of a YAML file where these are
+    # pass in a user name and password in the parameters, provide the location of a YAML file where these are
     # specified or read in the <tt>access_token</tt> from your environment path. Please note that you can stop
     # the connector from reading your environment path by setting <tt>no_env</tt> to true. When doing this please
-    # ensure your username and password are correct, otherwise you'll not be able to connect to the Comufy servers.
+    # ensure your user name and password are correct, otherwise you'll not be able to connect to the Comufy servers.
     #
     # The YAML file provided should appear as:
     #   config:
-    #     username: username
+    #     user: user
     #     password: password
     #
     # = Example
@@ -37,8 +37,8 @@ module Comufy
     #   # do not use the environment path
     #   Comufy::Connector.new(no_env: true)
     #
-    #   # set the username and password yourself
-    #   Comufy::Connector.new(username: YOUR_USERNAME, password: YOUR_PASSWORD)
+    #   # set the user and password yourself
+    #   Comufy::Connector.new(user: YOUR_USERNAME, password: YOUR_PASSWORD)
     #
     #   # Or you can read in from a YAML file!
     #
@@ -669,12 +669,12 @@ module Comufy
 
     private
 
-        # Use the configured username and password to get and set the access token and expiry time, if it fails,
-        # it means the user likely has their username/password wrong.
+        # Use the configured user name and password to get and set the access token and expiry time, if it fails,
+        # it means the user likely has their user name/password wrong.
         def authenticate
           data = {
               cd:       131,
-              user:     @config.username,
+              user:     @config.user,
               password: @config.password
           }
 
@@ -703,10 +703,10 @@ module Comufy
               }
             when 651 then
               @logger.debug(progname = 'Comufy::Connector.authenticate') {
-                "651 - Invalid username exception. Check that you are login in using the format user@domain. - data = #{data} - message = #{message}."
+                "651 - Invalid user name exception. Check that you are login in using the format user@domain. - data = #{data} - message = #{message}."
               }
               @logger.warn(progname = 'Comufy::Connector.authenticate') {
-                '651 - Invalid username exception. Check that you are login in using the format user@domain.'
+                '651 - Invalid user name exception. Check that you are login in using the format user@domain.'
               }
             when 652 then
               @logger.debug(progname = 'Comufy::Connector.authenticate') {
@@ -745,12 +745,13 @@ module Comufy
             return nil if not get_access_token
             data[:token] = @config.access_token
           end
-          json = CGI::escape(data.to_json)
-          url = URI.parse("#{@config::base_api_url}#{json}")
-          http = Net::HTTP.new(url.host, 443)
-          req = Net::HTTP::Get.new(url.to_s)
+
+          uri = URI.parse(@config::base_api_url)
+          http = Net::HTTP.new(uri.host, uri.port)
           http.use_ssl = true
-          response = http.request(req)
+          request = Net::HTTP::Post.new(uri.path, initheader = { 'Content-Type' => 'application/json' })
+          request.set_form_data({ request: data.to_json })
+          response = http.request(request)
           JSON.parse(response.read_body) if response.message == 'OK'
         end
 

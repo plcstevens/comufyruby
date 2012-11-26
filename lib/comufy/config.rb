@@ -2,7 +2,7 @@ module Comufy
   class Config
     include Comufy
 
-    attr_reader :username, :password, :base_api_url
+    attr_reader :user, :password, :base_api_url
     attr_accessor :access_token, :expiry_time
 
     # Sets the environment settings for Comufy to send and receive messages.
@@ -23,23 +23,23 @@ module Comufy
         yaml = Hash.new()
       end
 
-      username = params[:username]
+      user = params[:user]
       password = params[:password]
       no_env = params[:no_env]
       staging = params[:staging]
 
-      if (username and not password) or (password and not username)
+      if (user and not password) or (password and not user)
         raise "You must supply both a username and password."
       end
 
-      @username = username || yaml.fetch(:config, {})['username']
+      @user = user || yaml.fetch(:config, {})['user']
       @password = password || yaml.fetch(:config, {})['password']
       @access_token = no_env ? nil : ENV.fetch('access_token',  nil)
       @expiry_time = no_env ? nil : ENV.fetch('expiry_time',   nil)
 
       staging ?
-          @base_api_url = 'https://staging.comufy.com/xcoreweb/client?request=' :
-          @base_api_url = 'https://social.comufy.com/xcoreweb/client?request='
+          @base_api_url = 'https://staging.comufy.com/xcoreweb/client' :
+          @base_api_url = 'https://social.comufy.com/xcoreweb/client'
 
     end
   end
