@@ -2,6 +2,7 @@ module Comufy
   class Connector
     include Comufy
 
+    # values types for TYPE_TAG
     STRING_TYPE = :STRING
     DATE_TYPE   = :DATE
     GENDER_TYPE = :GENDER
@@ -9,6 +10,7 @@ module Comufy
     FLOAT_TYPE  = :FLOAT
     LEGAL_TYPES = [STRING_TYPE, DATE_TYPE, GENDER_TYPE, INT_TYPE, FLOAT_TYPE]
 
+    # key choices for tags
     NAME_TAG    = :name
     TYPE_TAG    = :type
     LEGAL_TAGS  = [NAME_TAG, TYPE_TAG]
@@ -157,7 +159,7 @@ module Comufy
       false
     end
 
-    # TODO: IMPLEMENT METHOD
+    # Method not implemented
     def remove_user app_name, uid # :nodoc:
       return false unless get_access_token
       @logger.debug(progname = 'Comufy::Connector.remove_user') {
