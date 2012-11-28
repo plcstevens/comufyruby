@@ -759,8 +759,7 @@ module Comufy
 
         # Checks that the token is not expired, and if expired, force an authentication.
         def get_access_token
-          return authenticate if has_token_expired
-          true
+          has_token_expired ? authenticate : true
         end
 
         # If the expiry time is set, and hasn't been reached, return false, otherwise
