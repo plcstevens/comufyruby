@@ -34,14 +34,15 @@ module Comufy
 
       @user = user || yaml.fetch(:config, {})['user']
       @password = password || yaml.fetch(:config, {})['password']
-      @access_token = no_env ? nil : ENV.fetch('access_token',  nil)
-      @expiry_time = no_env ? nil : ENV.fetch('expiry_time',   nil)
+      @access_token = no_env ? nil : ENV.fetch('COMUFY_ACCESS_TOKEN',  nil)
+      @expiry_time = no_env ? nil : ENV.fetch('COMUFY_EXPIRY_TIME',   nil)
 
       staging ?
           @base_api_url = 'https://staging.comufy.com/xcoreweb/client' :
           @base_api_url = 'https://social.comufy.com/xcoreweb/client'
 
-      @base_api_url = 'http://0.0.0.0:5000/xcoreweb/client'
+      # Override for now - we are using our comufy service!
+      @base_api_url = 'http://comufy.herokuapp.com/xcoreweb/client'
 
     end
   end

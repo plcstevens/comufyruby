@@ -759,14 +759,8 @@ module Comufy
           end
 
           uri = URI.parse(@config::base_api_url)
-          @logger.debug(progname = 'Comufy::Connector.call_api') {
-            "uri = #{uri.inspect} - uri.host = #{uri.host} - uri.port = #{uri.port}."
-          }
           http = Net::HTTP.new(uri.host, uri.port)
-          @logger.debug(progname = 'Comufy::Connector.call_api') {
-            "http = #{http.inspect}."
-          }
-          #http.use_ssl = true
+          #http.use_ssl = true # Only used when directly accessing Comufy!
           request = Net::HTTP::Post.new(uri.path, initheader = { 'Content-Type' => 'application/json' })
           request.set_form_data({ request: data.to_json })
           response = http.request(request)
