@@ -68,6 +68,16 @@ module Comufy
       }
     end
 
+    # See store_user for details
+    def add_user app_name, uid, tags
+      store_user app_name, uid, tags
+    end
+
+    # See store_user for details
+    def update_user app_name, uid, tags
+      store_user app_name, uid, tags
+    end
+
     # This API call allows you to register a Facebook user of your application into Comufy’s social CRM.
     # If this user was already registered with Comufy, their information will be updated.
     #
@@ -749,8 +759,14 @@ module Comufy
           end
 
           uri = URI.parse(@config::base_api_url)
+          @logger.debug(progname = 'Comufy::Connector.call_api') {
+            "uri = #{uri.inspect} - uri.host = #{uri.host} - uri.port = #{uri.port}."
+          }
           http = Net::HTTP.new(uri.host, uri.port)
-          http.use_ssl = true
+          @logger.debug(progname = 'Comufy::Connector.call_api') {
+            "http = #{http.inspect}."
+          }
+          #http.use_ssl = true
           request = Net::HTTP::Post.new(uri.path, initheader = { 'Content-Type' => 'application/json' })
           request.set_form_data({ request: data.to_json })
           response = http.request(request)

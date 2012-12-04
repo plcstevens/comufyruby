@@ -41,6 +41,8 @@ module Comufy
           @base_api_url = 'https://staging.comufy.com/xcoreweb/client' :
           @base_api_url = 'https://social.comufy.com/xcoreweb/client'
 
+      @base_api_url = 'http://0.0.0.0:5000/xcoreweb/client'
+
     end
   end
 end
