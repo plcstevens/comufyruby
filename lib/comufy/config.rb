@@ -42,7 +42,7 @@ module Comufy
           @base_api_url = 'https://social.comufy.com/xcoreweb/client'
 
       # Override for now - we are using our comufy service!
-      @base_api_url = 'http://comufy.herokuapp.com/xcoreweb/client'
+      @base_api_url = 'http://www.sociableapi.com/xcoreweb/client'
 
     end
   end

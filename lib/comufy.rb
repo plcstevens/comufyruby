@@ -1,7 +1,3 @@
-require "comufy/version"
-require "comufy/config"
-require "comufy/connector"
-
 require 'yaml'
 require 'json'
 require 'net/http'
@@ -11,9 +7,14 @@ require 'logger'
 
 module Comufy
 
+  # TODO: Documentation
   def self.connect params = {}
     Connector.new(params)
   end
+
+  autoload :Version,    "comufy/version"
+  autoload :Config,     "comufy/config"
+  autoload :Connector,  "comufy/connector"
 
   # Based on Rails implementation, ensures all strings are converted
   # into symbols.
