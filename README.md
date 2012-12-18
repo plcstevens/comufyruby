@@ -6,7 +6,7 @@ This library allows customers to interact with the Comufy backend and perform co
 
 Add this line to your application's Gemfile:
 
-    gem 'comufyruby'
+    gem 'comufy'
 
 And then execute:
 
@@ -14,7 +14,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install comufyruby
+    $ gem install comufy
 
 ## Usage
 

@@ -1,48 +1,40 @@
-module Comufy
+class Comufy
   class Config
-    include Comufy
 
     attr_reader :user, :password, :base_api_url
     attr_accessor :access_token, :expiry_time
 
     # Sets the environment settings for Comufy to send and receive messages.
-    # @param [Hash] params - all are optional
-    #   [Object] staging - as long as this is a value other than false/nil it'll change the @base_api_url to 'staging'
+    # @param [Hash] opts - all are optional
     #   [String] username - sets the username
     #   [String] password - sets the password
     #   [Object] no_env - as long as this is a value other than false/nil it'll not use environment values
-    def initialize params = {}
-      params = symbolize_keys(params)
+    def initialize opts = {}
+      opts = Comufy.symbolize_keys(opts)
+
+      user =          opts[:user]
+      password =      opts[:password]
+      no_env =        opts[:no_env]
+      yaml_location = opts[:yaml]
 
       begin
-        yaml_location = params[:yaml] || File.join(File.dirname(__FILE__), "yaml/config.yaml")
         yaml = YAML.load_file(yaml_location)
-        yaml = symbolize_keys(yaml)
+        yaml = Comufy.symbolize_keys(yaml)
       rescue
-        # TODO: should it check the ENV for the username and password?
         yaml = Hash.new()
       end
 
-      user = params[:user]
-      password = params[:password]
-      no_env = params[:no_env]
-      staging = params[:staging]
+      @access_token = no_env ?  nil : ENV.fetch('COMUFY_TOKEN',       nil)
+      @expiry_time =  no_env ?  nil : ENV.fetch('COMUFY_EXPIRY_TIME', nil)
+
+      @base_api_url = 'http://www.sociableapi.com/xcoreweb/client'
 
       if (user and not password) or (password and not user)
         raise "You must supply both a username and password."
+      else
+        @user =     user ||     yaml.fetch(:config, {}).fetch('user',     nil)
+        @password = password || yaml.fetch(:config, {}).fetch('password', nil)
       end
-
-      @user = user || yaml.fetch(:config, {})['user']
-      @password = password || yaml.fetch(:config, {})['password']
-      @access_token = no_env ? nil : ENV.fetch('COMUFY_ACCESS_TOKEN',  nil)
-      @expiry_time = no_env ? nil : ENV.fetch('COMUFY_EXPIRY_TIME',   nil)
-
-      staging ?
-          @base_api_url = 'https://staging.comufy.com/xcoreweb/client' :
-          @base_api_url = 'https://social.comufy.com/xcoreweb/client'
-
-      # Override for now - we are using our comufy service!
-      @base_api_url = 'http://www.sociableapi.com/xcoreweb/client'
 
     end
   end
