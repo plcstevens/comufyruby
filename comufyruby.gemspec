@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = Comufy::VERSION
   gem.authors       = %w(plcstevens)
   gem.email         = %w(philip@tauri-tec.com)
-  gem.description   = %q{This library can be used with Heroku}
-  gem.summary       = %q{This library allows customers to interact with the Comufy backend and perform common operations.}
+  gem.description   = %q{This library can be used with Heroku to connect to Comufy services}
+  gem.summary       = %q{This gem is intended to be used on heroku to allow users to easily setup their ruby systems with Comufy services}
   gem.homepage      = "https://github.com/plcstevens/comufyruby"
 
   gem.files         = `git ls-files`.split($/)

@@ -1,6 +1,6 @@
-# Comufyruby
+# Comufy
 
-This library allows customers to interact with the Comufy backend and perform common operations.
+This gem is intended to be used on heroku to allow users to easily setup their ruby systems with Comufy services.
 
 ## Installation
 
