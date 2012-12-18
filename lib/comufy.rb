@@ -9,6 +9,7 @@ class Comufy
 
   attr_reader :config, :logger
 
+  autoload :Constants,  "comufy/constants"
   autoload :Version,    "comufy/version"
   autoload :Config,     "comufy/config"
 
@@ -17,19 +18,6 @@ class Comufy
   def self.symbolize_keys hash
     hash.each_with_object( {} ) { |(k,v), h| h[k.to_sym] = v }
   end
-
-  # values types for TYPE_TAG
-  STRING_TYPE = :STRING
-  DATE_TYPE   = :DATE
-  GENDER_TYPE = :GENDER
-  INT_TYPE    = :INT
-  FLOAT_TYPE  = :FLOAT
-  LEGAL_TYPES = [STRING_TYPE, DATE_TYPE, GENDER_TYPE, INT_TYPE, FLOAT_TYPE]
-
-  # key choices for tags
-  NAME_TAG    = :name
-  TYPE_TAG    = :type
-  LEGAL_TAGS  = [NAME_TAG, TYPE_TAG]
 
   # There are a number of options you can pass to change default settings.
   #
@@ -334,15 +322,15 @@ class Comufy
     end
     tags.each do |tag|
       tag.each do |key, value|
-        unless LEGAL_TAGS.include?(key)
+        unless Constants::LEGAL_TAGS.include?(key)
           @logger.warn(progname = 'Comufy.register_tags') {
-            "You must have only two keys called #{NAME_TAG} and #{TYPE_TAG}."
+            "You must have only two keys called #{Constants::NAME_TAG} and #{Constants::TYPE_TAG}."
           }
           return false
         end
-        if (key == "type" or key == :type) and not LEGAL_TYPES.include?(value)
+        if (key == "type" or key == :type) and not Constants::LEGAL_TYPES.include?(value)
           @logger.warn(progname = 'Comufy.register_tags') {
-            "Your type must be one of these values: #{LEGAL_TYPES.join(',')}."
+            "Your type must be one of these values: #{Constants::LEGAL_TYPES.join(',')}."
           }
           return false
         end

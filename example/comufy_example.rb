@@ -1,12 +1,10 @@
 require 'comufy'
 
-USERNAME = ARGV[0]
-PASSWORD = ARGV[1]
-APPLICATION_NAME = ARGV[2]
-FACEBOOK_USER_ID = ARGV[3]
+APPLICATION_NAME  = ARGV[2]
+FACEBOOK_USER_ID  = ARGV[3]
 
-connect = Comufy.new(logger: "debug", user: 'USERNAME', password: 'PASSWORD')
-tag = Array[{name: :other_details, type: Comufy::STRING_TYPE}]
+connect = Comufy.new(logger: ARGV[0], yaml: ARGV[1])
+tag = Array[{name: :other_details, type: Comufy::Constants::STRING_TYPE}]
 puts connect.register_tags(APPLICATION_NAME, tag)
 
 # register a tag!
