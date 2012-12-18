@@ -7,6 +7,8 @@ require 'logger'
 
 class Comufy
 
+  attr_reader :config, :logger
+
   autoload :Version,    "comufy/version"
   autoload :Config,     "comufy/config"
 
