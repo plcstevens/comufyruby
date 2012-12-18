@@ -5,7 +5,7 @@ PASSWORD = ARGV[1]
 APPLICATION_NAME = ARGV[2]
 FACEBOOK_USER_ID = ARGV[3]
 
-connect = Comufy.new(logger: "debug", username: USERNAME, password: PASSWORD)
+connect = Comufy.new(logger: "debug", user: 'USERNAME', password: 'PASSWORD')
 tag = Array[{name: :other_details, type: Comufy::STRING_TYPE}]
 puts connect.register_tags(APPLICATION_NAME, tag)
 

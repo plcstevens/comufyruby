@@ -41,20 +41,21 @@ class Comufy
   # ensure your user name and password are correct, otherwise you'll not be able to connect to the Comufy servers.
   #
   # The YAML file provided should appear as:
-  #   config:
-  #     user: user
-  #     password: password
+  #   user: user
+  #   password: password
+  #
+  #   OR
+  #
+  #   token: token
+  #   time: expiry_time
   #
   # = Example
   #
-  #   # use the staging server
-  #   Comufy.new(staging: true)
-  #
-  #   # do not use the environment path
-  #   Comufy.new(no_env: true)
-  #
   #   # set the user and password yourself
   #   Comufy.new(user: YOUR_USERNAME, password: YOUR_PASSWORD)
+  #
+  #   # set the token and expiry time
+  #   Comufy.new(token: YOUR_TOKEN, time: YOUR_EXPIRY_TIME)
   #
   #   # Or you can read in from a YAML file!
   #
@@ -62,7 +63,7 @@ class Comufy
   #   Comufy.new(yaml: PATH_TO_YAML_FILE)
   def initialize opts = {}
     opts = Comufy.symbolize_keys(opts)
-    @config = Config.new(opts)
+
     @logger = Logger.new(STDOUT)
     @logger.level = case opts[:logger]
                       when "info" then
@@ -80,6 +81,8 @@ class Comufy
     @logger.formatter = proc { |severity, datetime, progname, msg|
       original_formatter.call(severity, datetime, progname, msg.dump)
     }
+
+    @config = Config.new(opts)
   end
 
   # This API call allows you to register a Facebook user of your application into Comufy’s social CRM.
