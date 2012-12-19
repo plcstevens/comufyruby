@@ -89,13 +89,13 @@ class Comufy
   #   Comufy.store_users(YOUR_APPLICATION_NAME, USER_FACEBOOK_ID, { 'dob' => '1978-10-01 19:50:48' })
   def store_user app_name, uid, tags
     return false unless get_access_token
-    if app_name.nil? or app_name.empty?
+    if app_name.nil? or not app_name.is_a? String or app_name.empty?
       @logger.warn(progname = 'Comufy.store_user') {
         'First parameter must be set to your application name.'
       }
       return false
     end
-    if uid.nil? or uid.empty?
+    if uid.nil? or not uid.is_a? String or uid.empty?
       @logger.warn(progname = 'Comufy.store_user') {
         'Second parameter must be a valid Facebook user ID.'
       }
@@ -205,7 +205,7 @@ class Comufy
   #   )
   def store_users app_name, uid_tags
     return false unless get_access_token
-    if app_name.nil? or app_name.empty?
+    if app_name.nil? or not app_name.is_a? String or app_name.empty?
       @logger.warn(progname = 'Comufy.store_users') {
         'First parameter must be set to your application name.'
       }
@@ -308,7 +308,7 @@ class Comufy
   #   )
   def register_tags app_name, tags
     return false unless get_access_token
-    if app_name.nil? or app_name.empty?
+    if app_name.nil? or not app_name.is_a? String or app_name.empty?
       @logger.warn(progname = 'Comufy.register_tags') {
         'First parameter must be set to your application name.'
       }
@@ -409,13 +409,13 @@ class Comufy
   #   Comufy.unregister_tag(YOUR_APPLICATION_NAME, 'dob')
   def unregister_tag app_name, tag
     return false unless get_access_token
-    if app_name.nil? or app_name.empty?
+    if app_name.nil? or not app_name.is_a? String or app_name.empty?
       @logger.warn(progname = 'Comufy.unregister_tag') {
         'First parameter must be set to your application name.'
       }
       return false
     end
-    if tag.nil? or tag.empty?
+    if tag.nil? or not tag.is_a? String or tag.empty?
       @logger.warn(progname = 'Comufy.unregister_tag') {
         'Second parameter must be set to the tag.'
       }
@@ -512,25 +512,25 @@ class Comufy
   #    )
   def send_facebook_message app_name, description, content, uids, opts = {}
     return false unless get_access_token
-    if app_name.nil? or app_name.empty? or not content.is_a?(String)
+    if app_name.nil? or not app_name.is_a?(String) or app_name.empty?
       @logger.warn(progname = 'Comufy.send_facebook_message') {
         'First parameter must be set to your application name, as a String.'
       }
       return false
     end
-    if description.nil? or description.empty? or not content.is_a?(String)
+    if description.nil? or not description.is_a?(String) or description.empty?
       @logger.warn(progname = 'Comufy.send_facebook_message') {
         'Second parameter must be set to your facebook description, as a String.'
       }
       return false
     end
-    if content.nil? or content.empty? or not content.is_a?(String)
+    if content.nil? or not content.is_a?(String) or content.empty?
       @logger.warn(progname = 'Comufy.send_facebook_message') {
         'Third parameter must be sent to your facebook content, as a String.'
       }
       return false
     end
-    if uids.nil? or uids.empty? or not uids.is_a?(Array)
+    if uids.nil? or not uids.is_a?(Array) or uids.empty?
       @logger.warn(progname = 'Comufy.send_facebook_message') {
         'Fourth parameter must be sent to your facebook uids, as an Array of Strings.'
       }
